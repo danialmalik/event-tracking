@@ -9,9 +9,5 @@ LOGGER = get_task_logger(__name__)
 
 class CaliperBackend(RoutingBackend):
 
-    @staticmethod
-    def module_string():
-        return 'eventtracking.caliper.backends.CaliperBackend'
-
     def send(self, event):
         LOGGER.info(event)

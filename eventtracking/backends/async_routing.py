@@ -1,12 +1,13 @@
 """Route events to processors and backends asynchronously"""
+import logging
+import pickle
 
 from collections import OrderedDict
-import logging
+from pickle import PicklingError
 
 from eventtracking.processors.exceptions import EventEmissionExit
 from eventtracking.backends.routing import RoutingBackend
 from eventtracking.tasks import send_task_to_backend
-from eventtracking.utils import BackendJSONEncoder, fullname, BackendJSONDecoder
 
 LOG = logging.getLogger(__name__)
 
@@ -53,14 +54,13 @@ class AsyncRoutingBackend(RoutingBackend):
         """
         for name, backend in self.backends.iteritems():
             try:
-                serialized_self = BackendJSONEncoder().default(self)
-                serialized_backed = BackendJSONEncoder().default(backend)
-
-                LOG.info(serialized_self)
-                LOG.info(serialized_backed)
-
-                send_task_to_backend.delay(name, serialized_backed, event)
+                pickled_backend = pickle.dumps(backend)
+                send_task_to_backend.delay(name, pickled_backend, event)
+            except PicklingError:
+                LOG.exception(
+                    'Unable to pickle backend: %s', name
+                )
             except Exception:  # pylint: disable=broad-except
                 LOG.exception(
-                    'Unable to send event to backend: %s', name
+                    'Unable to schedule task to send event to backend %s', name
                 )

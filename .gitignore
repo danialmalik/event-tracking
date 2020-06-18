@@ -34,3 +34,6 @@ diff_quality_pylint.html
 dist
 build
 pylintrc_backup
+
+# VS code
+.vscode/

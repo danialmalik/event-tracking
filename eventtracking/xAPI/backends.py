@@ -7,9 +7,5 @@ LOGGER = logging.getLogger(__name__)
 LOGGER = get_task_logger(__name__)
 
 class XApiBackend(RoutingBackend):
-    @staticmethod
-    def module_string():
-        return 'eventtracking.xAPI.backends.XApiBackend'
-
     def send(self, event):
         LOGGER.info(event)
