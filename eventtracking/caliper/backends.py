@@ -10,4 +10,5 @@ LOGGER = get_task_logger(__name__)
 class CaliperBackend(RoutingBackend):
 
     def send(self, event):
+        LOGGER.info('CALIPER')
         LOGGER.info(event)

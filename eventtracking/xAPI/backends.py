@@ -8,4 +8,5 @@ LOGGER = get_task_logger(__name__)
 
 class XApiBackend(RoutingBackend):
     def send(self, event):
+        LOGGER.info('xAPI')
         LOGGER.info(event)

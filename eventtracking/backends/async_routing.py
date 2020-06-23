@@ -48,11 +48,11 @@ class AsyncRoutingBackend(RoutingBackend):
 
     def send_to_backends_async(self, event):
         """
-        Sends the event to all registered backends.
+        Sends the event to all registered backends asynchronously.
 
         Logs and swallows all `Exception`.
         """
-        for name, backend in self.backends.iteritems():
+        for name, backend in self.backends.items():
             try:
                 pickled_backend = pickle.dumps(backend)
                 send_task_to_backend.delay(name, pickled_backend, event)
