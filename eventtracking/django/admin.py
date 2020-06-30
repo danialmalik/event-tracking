@@ -1,16 +1,18 @@
 from django.contrib import admin
-from eventtracking.django.models import RegExpFilter
+from django.apps import apps
 
+from eventtracking.django.models import RegExFilter
+# RegExFilter = apps.get_model('eventtracking_django', 'RegExFilter')
 
-class RegExpFilterAdmin(admin.ModelAdmin):
+class RegExFilterAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         has_permission = super().has_add_permission(request)
 
-        if has_permission and RegExpFilter.objects.exists():
+        if has_permission and RegExFilter.objects.exists():
             return False
 
         return has_permission
 
 
-admin.site.register(RegExpFilter, RegExpFilterAdmin)
+admin.site.register(RegExFilter, RegExFilterAdmin)

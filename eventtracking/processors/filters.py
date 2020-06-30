@@ -17,49 +17,38 @@ class RegExFilterProcessor:
     """
 
     def __call__(self, event, **kwargs):
-        from eventtracking.django.models import RegExpFilter
+        from eventtracking.django.models import RegExFilter
+
+        def _should_event_pass(event_name, regex_filter):
+            match_found = False
+            for expression in regex_filter.compiled_expressions:
+                if re.match(expression, event_name):
+                    match_found = True
+                    logger.info('Event %s matches the regular expression %s with filter type '
+                                'set to %s', event_name, expression, regex_filter.filter_type)
+                    break
+
+            if (
+                (match_found and regex_filter.filter_type == RegExFilter.BLACKLIST)
+                or
+                (not match_found and regex_filter.filter_type == RegExFilter.WHITELIST)
+            ):
+                return False
+            return True
 
         try:
-            regex_filter = RegExpFilter.objects.all()[0]
+            regex_filter = RegExFilter.objects.all()[0]
         except IndexError:
-            logger.warning('Regular Expression Filter does not have any configurations. \
-                            Cannot filter events.')
+            logger.warning('Regular Expression Filter does not have any configurations. '
+                           'Cannot filter events.')
             return event
 
-        regular_expressions = regex_filter.regular_expressions
-        if regular_expressions:
-            regular_expressions = regular_expressions.split(',')
-            regular_expressions = [expression.strip() for expression in regular_expressions]
-
         event_name = event.get('event_type')
-        match_found = False
 
-        for expression in regular_expressions:
-            try:
-                expression = re.compile(expression)
-            except re.error:
-                logger.error('Invalid regular expression passed: %s.\
-                               Cannot process using this expression.', expression)
-                continue
-
-            if re.match(expression, event_name):
-                match_found = True
-                logger.info('Event %s matches the regular expression %s with filter type \
-                            set to %s', event_name, expression, regex_filter.filter_type)
-                break
-
-        if (
-            (match_found and regex_filter.filter_type == RegExpFilter.BLACKLIST)
-            or
-            (not match_found and regex_filter.filter_type == RegExpFilter.WHITELIST)
-        ):
+        if not _should_event_pass(event_name, regex_filter):
             logger.info('Event %s is not allowed to be further processed.', event_name)
             raise EventEmissionExit
-
-        elif (
-            (match_found and regex_filter.filter_type == RegExpFilter.WHITELIST)
-            or
-            (not match_found and regex_filter.filter_type == RegExpFilter.BLACKLIST)
-        ):
-            logger.info('Event %s is allowed to be further processed.')
+        else:
+            import pdb; pdb.set_trace()
+            logger.info('Event %s is allowed to be further processed.', event_name)
             return event

@@ -1,11 +1,16 @@
 """
 Models for filtering of events
 """
+import logging
+import re
+
 from django.core.exceptions import ValidationError
 from django.db import models
 
+LOGGER = logging.getLogger(__name__)
 
-class RegExpFilter(models.Model):
+
+class RegExFilter(models.Model):
     BLACKLIST = 'blacklist'
     WHITELIST = 'whitelist'
     FILTER_TYPES = (
@@ -38,8 +43,21 @@ class RegExpFilter(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if not self.pk and RegExpFilter.objects.exists():
+        if not self.pk and RegExFilter.objects.exists():
             # if you'll not check for self.pk
             # then error will also raised in update of exists model
-            raise ValidationError('There can be only one RegExpFilter instance')
-        return super(RegExpFilter, self).save(*args, **kwargs)
+            raise ValidationError('There can be only one RegExFilter instance')
+        return super(RegExFilter, self).save(*args, **kwargs)
+
+    @property
+    def compiled_expressions(self):
+        raw_expressions = self.regular_expressions.split(',')
+        raw_expressions = [expression.strip() for expression in raw_expressions]
+        compiled = []
+        for expression in raw_expressions:
+            try:
+                compiled.append(re.compile(expression))
+            except re.error:
+                LOGGER.error('Invalid expression passed in expressions list: %s', expression)
+
+        return compiled

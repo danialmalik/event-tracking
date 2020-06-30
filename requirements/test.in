@@ -10,4 +10,5 @@ pycodestyle
 django_nose
 mock
 nose
-
+factory-boy
+ddt
