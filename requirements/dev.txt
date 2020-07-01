@@ -31,6 +31,7 @@ filelock==3.0.12          # via -r requirements/travis.txt, tox, virtualenv
 idna==2.10                # via -r requirements/travis.txt, requests
 imagesize==1.2.0          # via sphinx
 importlib-metadata==1.7.0  # via -r requirements/test.txt, -r requirements/travis.txt, pluggy, pytest, tox, virtualenv
+importlib-resources==3.0.0  # via -r requirements/travis.txt, virtualenv
 isort==4.3.21             # via -r requirements/test.txt, pylint
 jinja2==2.11.2            # via sphinx
 kombu==3.0.37             # via -r requirements/test.txt, celery
@@ -40,6 +41,7 @@ mccabe==0.6.1             # via -r requirements/test.txt, pylint
 mock==3.0.5               # via -c requirements/constraints.txt, -r requirements/test.txt
 more-itertools==8.4.0     # via -r requirements/test.txt, pytest
 packaging==20.4           # via -r requirements/test.txt, -r requirements/travis.txt, pytest, sphinx, tox
+pathlib2==2.3.5           # via -r requirements/test.txt, pytest
 pip-tools==5.2.1          # via -r requirements/dev.in, -r requirements/pip-tools.txt
 pluggy==0.13.1            # via -r requirements/test.txt, -r requirements/travis.txt, pytest, tox
 py==1.9.0                 # via -r requirements/test.txt, -r requirements/travis.txt, pytest, tox
@@ -56,7 +58,7 @@ pytest==5.4.3             # via -r requirements/test.txt, pytest-cov
 python-dateutil==2.8.1    # via -r requirements/test.txt, faker
 pytz==2020.1              # via -r requirements/test.txt, babel, celery, django
 requests==2.24.0          # via -r requirements/travis.txt, codecov, sphinx
-six==1.15.0               # via -r requirements/pip-tools.txt, -r requirements/test.txt, -r requirements/travis.txt, astroid, edx-lint, mock, packaging, pip-tools, python-dateutil, tox, virtualenv
+six==1.15.0               # via -r requirements/pip-tools.txt, -r requirements/test.txt, -r requirements/travis.txt, astroid, edx-lint, mock, packaging, pathlib2, pip-tools, python-dateutil, tox, virtualenv
 snowballstemmer==2.0.0    # via sphinx
 sphinx==3.1.1             # via -r requirements/dev.in
 sphinxcontrib-applehelp==1.0.2  # via sphinx
@@ -75,7 +77,7 @@ urllib3==1.25.9           # via -r requirements/travis.txt, requests
 virtualenv==20.0.25       # via -r requirements/travis.txt, tox
 wcwidth==0.2.5            # via -r requirements/test.txt, pytest
 wrapt==1.11.2             # via -r requirements/test.txt, astroid
-zipp==3.1.0               # via -r requirements/test.txt, -r requirements/travis.txt, importlib-metadata
+zipp==1.2.0               # via -r requirements/test.txt, -r requirements/travis.txt, importlib-metadata, importlib-resources
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
