@@ -4,7 +4,7 @@ import factory
 from django.apps import apps
 
 
-class RegExFilterFactory(factory.Factory):
+class RegExFilterFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = apps.get_model('django', 'RegExFilter')

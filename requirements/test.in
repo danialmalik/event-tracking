@@ -12,3 +12,5 @@ mock
 nose
 factory-boy
 ddt
+pytest
+pytest-cov

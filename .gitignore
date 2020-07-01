@@ -37,3 +37,7 @@ pylintrc_backup
 
 # VS code
 .vscode/
+
+# virtual environments
+env/
+venv/

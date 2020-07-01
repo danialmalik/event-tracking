@@ -1,6 +1,7 @@
 
 """Test the filter processor(s)"""
 import ddt
+import pytest
 from mock import patch
 from mock import sentinel
 from unittest import TestCase
@@ -9,6 +10,8 @@ from eventtracking.processors.exceptions import EventEmissionExit
 from eventtracking.processors.filters import RegExFilterProcessor
 from eventtracking.processors.tests.factories import RegExFilterFactory
 
+# Let pytest know that DB is accessible for user.
+pytestmark = pytest.mark.django_db
 
 @ddt.ddt
 @patch('eventtracking.processors.filters.logger')
@@ -42,16 +45,16 @@ class RegExFilterProcessorTests(TestCase):
         )
 
     @ddt.data(
-        ('whitelist', '*', sentinel.name, True),
+        ('whitelist', 'sentinel.*', sentinel.name, True),
         ('whitelist', 'NOT_MATCHING', sentinel.name, False),
-        ('blacklist', '*', sentinel.name, False),
+        ('blacklist', 'sentinel.*', sentinel.name, False),
         ('blacklist', 'NOT_MATCHING', sentinel.name, True),
     )
     @ddt.unpack
     def test_event_passing_multiple_scenarios(self, filter_type, filter_regex, event_name, should_pass, mocked_logger):
-        regex_filter = RegExFilterFactory(is_enabled=True, filter_type=filter_type, regular_expressions=filter_regex)
+        RegExFilterFactory.create(is_enabled=True, filter_type=filter_type, regular_expressions=filter_regex)
         event = {
-            'name': event_name,
+            'name': str(event_name),
             'context': {
                 'user_id': sentinel.user_id
             },

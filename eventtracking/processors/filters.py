@@ -43,12 +43,11 @@ class RegExFilterProcessor:
                            'Cannot filter events.')
             return event
 
-        event_name = event.get('event_type')
+        event_name = event.get('name')
 
         if not _should_event_pass(event_name, regex_filter):
             logger.info('Event %s is not allowed to be further processed.', event_name)
             raise EventEmissionExit
         else:
-            import pdb; pdb.set_trace()
             logger.info('Event %s is allowed to be further processed.', event_name)
             return event
