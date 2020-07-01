@@ -12,3 +12,4 @@ factory-boy
 ddt
 pytest
 pytest-cov
+pytest-django
