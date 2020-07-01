@@ -1,0 +1,62 @@
+name: CI Tests
+
+on: [pull_request]
+
+env:
+  TOXENV: 'django22'
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+          python-version: [3.5, 3.8]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+            python-version: ${{ matrix.python-version }}
+      - name: Install requirements
+        run: |
+            make test.setup install
+            pip install pip==20.0.2
+
+      - name: Setup MongoDB
+        uses: supercharge/mongodb-github-action@1.3.0
+
+      - name: Run unit tests
+        run: |
+          make test.unit
+      - name: Run integration tests
+        if: always()
+        run: |
+            make test.integration
+      - name: Run performance tests
+        if: always()
+        run: |
+            make test.performance
+
+  quality-tests:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+          python-version: [3.5, 3.8]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+            python-version: ${{ matrix.python-version }}
+      - name: Install requirements
+        run: |
+            make test.setup install
+            pip install pip==20.0.2
+
+      - name: Run pycodestyle
+        run: |
+            make style
+      - name: Run linter
+        if: always()
+        run: |
+            make lint
