@@ -18,7 +18,7 @@ def async_send(settings_name, json_event):
     """
     Send event to configured backends asynchronously.
 
-    Load the settings with name `settings_name` and use those to initalize a
+    Load the settings with name `settings_name` and use those to initialize a
     new tracker backend with all configured backends initiliazed. Send the event
     to async tracker backend.
 
@@ -30,4 +30,4 @@ def async_send(settings_name, json_event):
     tracker = AsyncTracker(backends_settings_name=settings_name)
 
     tracker.send_to_backends(event)
-    logger.info('Successfully sent event "%s" to AsyncTracker.', event['name'])
+    logger.info('Successfully sent event "{}" to AsyncTracker.'.format(event['name']))

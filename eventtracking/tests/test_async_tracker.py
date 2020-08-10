@@ -79,7 +79,7 @@ class TestAsyncTracker(TestCase):
         # test with invalid regular expression
         filter_settings = {
             'mock': {
-                'type': 'INVALID_TYPE',
+                'type': 'allowlist',
                 'regular_expressions': ['***']
             }
         }

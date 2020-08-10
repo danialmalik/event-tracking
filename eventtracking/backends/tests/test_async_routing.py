@@ -45,11 +45,16 @@ class TestAsyncRoutingBackend(TestCase):
         backend = AsyncRoutingBackend()
         backend.send(self.sample_event)
 
-        mocked_log.exception.assert_called_once_with('JSONEncodeError: Unable to encode event:%s', self.sample_event)
+        mocked_log.exception.assert_called_once_with(
+            'JSONEncodeError: Unable to encode event: {}'.format(self.sample_event)
+        )
         mocked_async_send.assert_not_called()
 
     @patch('eventtracking.backends.async_routing.async_send')
     def test_successful_sending_event_to_task(self, mocked_async_send):
         backend = AsyncRoutingBackend()
         backend.send(self.sample_event)
-        mocked_async_send.assert_called_once_with(ASYNC_ROUTING_BACKENDS_SETTINGS_NAME, json.dumps(self.sample_event))
+        mocked_async_send.delay.assert_called_once_with(
+            ASYNC_ROUTING_BACKENDS_SETTINGS_NAME,
+            json.dumps(self.sample_event)
+        )
