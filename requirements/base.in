@@ -7,6 +7,3 @@ pymongo>=2.7.2,<4.0.0
 pytz
 six
 celery
-django-model-utils
-edx-django-utils
-json-tricks

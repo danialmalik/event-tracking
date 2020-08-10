@@ -5,8 +5,6 @@ from __future__ import absolute_import
 import json
 import logging
 
-from json_tricks import dumps
-
 from eventtracking.backends.routing import RoutingBackend
 from eventtracking.backends.logger import DateTimeJSONEncoder
 from eventtracking.processors.exceptions import EventEmissionExit
@@ -14,6 +12,9 @@ from eventtracking.tasks import async_send
 
 
 LOG = logging.getLogger(__name__)
+
+
+ASYNC_ROUTING_SETTINGS_NAME = 'ASYNC_ROUTING_BACKENDS'
 
 
 class AsyncRoutingBackend(RoutingBackend):
@@ -41,13 +42,4 @@ class AsyncRoutingBackend(RoutingBackend):
             )
             return
 
-        for name, backend in self.backends.items():
-            try:
-                json_backend = dumps(backend)
-            except ValueError:
-                LOG.exception(
-                    'JSONEncodeError: Unable to encode backend: %s', name
-                )
-                continue
-
-            async_send.delay(json_backend, json_event, backend_name=name)
+        async_send.delay(ASYNC_ROUTING_SETTINGS_NAME, json_event)

@@ -24,15 +24,19 @@ class DjangoTracker(Tracker):
     Django settings.
     """
 
-    def __init__(self):
-        backends = self.create_backends_from_settings()
-        processors = self.create_processors_from_settings()
+    def __init__(
+            self,
+            backends_settings_name=DJANGO_BACKEND_SETTING_NAME,
+            processors_settings_name=DJANGO_PROCESSOR_SETTING_NAME
+    ):
+        backends = self.create_backends_from_settings(backends_settings_name)
+        processors = self.create_processors_from_settings(processors_settings_name)
         super(DjangoTracker, self).__init__(backends, ThreadLocalContextLocator(), processors)
 
-    def create_backends_from_settings(self):
+    def create_backends_from_settings(self, settings_name):
         """
-        Expects the Django setting "EVENT_TRACKING_BACKENDS" to be defined and point
-        to a dictionary of backend engine configurations.
+        Expects the Django setting with `settings_name` (default: "EVENT_TRACKING_BACKENDS")
+        to be defined and point to a dictionary of backend engine configurations.
 
         Example::
 
@@ -51,7 +55,7 @@ class DjangoTracker(Tracker):
                 },
             }
         """
-        config = getattr(settings, DJANGO_BACKEND_SETTING_NAME, {})
+        config = getattr(settings, settings_name, {})
 
         backends = self.instantiate_objects(config)
 
@@ -142,10 +146,10 @@ class DjangoTracker(Tracker):
         options = self.instantiate_objects(options)
         return cls(**options)
 
-    def create_processors_from_settings(self):
+    def create_processors_from_settings(self, settings_name):
         """
-        Expects the Django setting "EVENT_TRACKING_PROCESSORS" to be defined and
-        point to a list of backend engine configurations.
+        Expects the Django setting with `settings_name` (default: "EVENT_TRACKING_PROCESSORS")
+        to be defined and point to a list of backend engine configurations.
 
         Example::
 
@@ -161,7 +165,7 @@ class DjangoTracker(Tracker):
                 },
             ]
         """
-        config = getattr(settings, DJANGO_PROCESSOR_SETTING_NAME, [])
+        config = getattr(settings, settings_name, [])
 
         processors = self.instantiate_objects(config)
 
