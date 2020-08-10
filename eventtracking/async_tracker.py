@@ -43,11 +43,11 @@ class AsyncTracker(DjangoTracker):
                     logger.info('Sending event "%s" to backend "%s"', event['name'], name)
                     backend.send(event)
                 else:
-                    logger.info('Event "%s" is not allowed to be passed to backend "%s"', event['name'], name)
+                    logger.info('Event "{}" is not allowed to be passed to backend "{}"'.format(event['name'], name))
 
             except Exception:  # pylint: disable=broad-except
                 logger.exception(
-                    'Unable to send event "%s" to backend: %s', event['name'], name
+                    'Unable to send event "{}" to backend "{}"'.format(event['name'], name)
                 )
 
     def should_event_pass(self, event, backend_name):
@@ -91,11 +91,11 @@ class AsyncTracker(DjangoTracker):
         """
         if filter_config.type not in (ALLOWLIST, BLOCKLIST):
             logger.error(
-                'Unsupported filter type %s is set. Allowed types are only %s and %s.',
-                filter_config.type,
-                ALLOWLIST,
-                BLOCKLIST
-            )
+                'Unsupported filter type {} is set. Allowed types are only {} and {}.'.format(
+                    filter_config.type,
+                    ALLOWLIST,
+                    BLOCKLIST
+                ))
             raise ImproperlyConfigured('Invalid filter type is configured')
 
     def _compile_regular_expressions(self, expressions_list):
@@ -120,7 +120,7 @@ class AsyncTracker(DjangoTracker):
 
         if invalid_regex_expressions:
             logger.error('The following invalid regular expressions are configured'
-                         'for setting "ASYNC_ROUTING_BACKENDS_FILTERS": %s', invalid_regex_expressions)
+                         'for setting "ASYNC_ROUTING_BACKENDS_FILTERS": {}'.format(invalid_regex_expressions))
             raise ImproperlyConfigured('Invalid Regular Expressions are configured.')
 
         return compiled_regex_expressions

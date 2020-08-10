@@ -1,7 +1,4 @@
 """Route events to processors and backends"""
-
-from __future__ import absolute_import
-
 import json
 import logging
 
@@ -36,9 +33,8 @@ class AsyncRoutingBackend(RoutingBackend):
             json_event = json.dumps(processed_event, cls=DateTimeJSONEncoder)
         except ValueError:
             LOG.exception(
-                'JSONEncodeError: Unable to encode event:%s', processed_event
+                'JSONEncodeError: Unable to encode event:{}'.format(processed_event)
             )
             return
 
-        # async_send.delay(ASYNC_ROUTING_BACKENDS_SETTINGS_NAME, json_event)
-        async_send(ASYNC_ROUTING_BACKENDS_SETTINGS_NAME, json_event)
+        async_send.delay(ASYNC_ROUTING_BACKENDS_SETTINGS_NAME, json_event)

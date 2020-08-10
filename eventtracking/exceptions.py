@@ -5,5 +5,5 @@ Exception class for eventtracking app
 
 class ImproperlyConfigured(Exception):
     """
-    Raised when there invalid configurations are supplied
+    Raised when there are invalid configurations are supplied
     """
