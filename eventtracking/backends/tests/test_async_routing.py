@@ -4,9 +4,11 @@ from __future__ import absolute_import
 import json
 from unittest import TestCase
 
-from mock import MagicMock, call, sentinel, patch
+from mock import MagicMock, sentinel, patch
 from eventtracking.backends.async_routing import AsyncRoutingBackend
 from eventtracking.processors.exceptions import EventEmissionExit
+
+from eventtracking.async_tracker import ASYNC_ROUTING_BACKENDS_SETTINGS_NAME
 
 
 class TestAsyncRoutingBackend(TestCase):
@@ -48,24 +50,8 @@ class TestAsyncRoutingBackend(TestCase):
         mocked_log.exception.assert_called_once_with('JSONEncodeError: Unable to encode event:%s', self.sample_event)
         mocked_async_send.assert_not_called()
 
-    @patch('eventtracking.backends.async_routing.dumps')
-    @patch('eventtracking.backends.async_routing.LOG')
-    @patch('eventtracking.backends.async_routing.async_send.delay')
-    def test_with_value_error_in_one_backend_json_encoding(
-        self, mocked_async_send, mocked_log, mocked_dumps
-    ):
-        """Test the backend's send method when one of the three backends
-        could not be encoded into json.
-        """
-        mocked_dumps.side_effect = [ValueError, '{"mocked_backend":1}', '{"mocked_backend":2}']
-        json_event = json.dumps(self.sample_event)
-
-        backend = AsyncRoutingBackend(backends=self.mocked_backends)
+    @patch('eventtracking.backends.async_routing.async_send')
+    def test_successful_sending_event_to_task(self, mocked_async_send):
+        backend = AsyncRoutingBackend()
         backend.send(self.sample_event)
-
-        mocked_log.exception.assert_called_once_with('JSONEncodeError: Unable to encode backend: %s', '0')
-
-        mocked_async_send.assert_has_calls([
-            call('{"mocked_backend":1}', json_event, backend_name='1'),
-            call('{"mocked_backend":2}', json_event, backend_name='2'),
-        ])
+        mocked_async_send.assert_called_once_with(ASYNC_ROUTING_BACKENDS_SETTINGS_NAME, json.dumps(self.sample_event))

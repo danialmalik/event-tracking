@@ -23,4 +23,17 @@ INSTALLED_APPS = [
 
 EVENT_TRACKING_ENABLED = True
 
+ASYNC_ROUTING_BACKENDS = {
+    'mock': {
+        'ENGINE': 'mock.MagicMock'
+    },
+}
+
+ASYNC_ROUTING_FILTERS = {
+    'mock': {
+        'type': '',
+        'regular_expressions': []
+    }
+}
+
 SECRET_KEY = "test_key"

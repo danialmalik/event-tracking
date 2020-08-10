@@ -9,12 +9,10 @@ from eventtracking.backends.routing import RoutingBackend
 from eventtracking.backends.logger import DateTimeJSONEncoder
 from eventtracking.processors.exceptions import EventEmissionExit
 from eventtracking.tasks import async_send
+from eventtracking.async_tracker import ASYNC_ROUTING_BACKENDS_SETTINGS_NAME
 
 
 LOG = logging.getLogger(__name__)
-
-
-ASYNC_ROUTING_SETTINGS_NAME = 'ASYNC_ROUTING_BACKENDS'
 
 
 class AsyncRoutingBackend(RoutingBackend):
@@ -42,4 +40,5 @@ class AsyncRoutingBackend(RoutingBackend):
             )
             return
 
-        async_send.delay(ASYNC_ROUTING_SETTINGS_NAME, json_event)
+        # async_send.delay(ASYNC_ROUTING_BACKENDS_SETTINGS_NAME, json_event)
+        async_send(ASYNC_ROUTING_BACKENDS_SETTINGS_NAME, json_event)
