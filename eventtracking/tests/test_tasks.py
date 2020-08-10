@@ -7,11 +7,11 @@ from django.test import TestCase
 
 from mock import MagicMock, patch, sentinel
 
-from eventtracking.tasks import async_send
+from eventtracking.tasks import send_event
 
 
 class TestAsyncSend(TestCase):
-    """Test async_send task"""
+    """Test send_event task"""
 
     def setUp(self):
         super(TestAsyncSend, self).setUp()
@@ -34,5 +34,5 @@ class TestAsyncSend(TestCase):
         mocked_tracker = MagicMock()
         mocked_async_tracker_cls.return_value = mocked_tracker
 
-        async_send('test_settings_name', json.dumps(self.event))
+        send_event('test_settings_name', json.dumps(self.event))
         mocked_tracker.send_to_backends.assert_called_once_with(self.event)

@@ -13,8 +13,8 @@ from eventtracking.async_tracker import AsyncTracker
 logger = get_task_logger(__name__)
 
 
-@task(name='eventtracking.tasks.async_send')
-def async_send(settings_name, json_event):
+@task(name='eventtracking.tasks.send_event')
+def send_event(settings_name, json_event):
     """
     Send event to configured backends asynchronously.
 
@@ -29,5 +29,5 @@ def async_send(settings_name, json_event):
     event = json.loads(json_event)
     tracker = AsyncTracker(backends_settings_name=settings_name)
 
+    logger.info('Sending event "{}" to AsyncTracker.'.format(event['name']))
     tracker.send_to_backends(event)
-    logger.info('Successfully sent event "{}" to AsyncTracker.'.format(event['name']))

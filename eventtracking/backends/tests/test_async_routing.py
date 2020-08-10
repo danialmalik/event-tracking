@@ -28,19 +28,19 @@ class TestAsyncRoutingBackend(TestCase):
             str(i): MagicMock() for i in range(3)
         }
 
-    @patch('eventtracking.backends.async_routing.async_send')
-    def test_event_emission_exit(self, mocked_async_send):
+    @patch('eventtracking.backends.async_routing.send_event')
+    def test_event_emission_exit(self, mocked_send_event):
         mocked_processor = MagicMock(side_effect=EventEmissionExit)
         backend = AsyncRoutingBackend(processors=[
             mocked_processor
         ])
         backend.send(self.sample_event)
-        mocked_async_send.assert_not_called()
+        mocked_send_event.assert_not_called()
 
     @patch('eventtracking.backends.async_routing.LOG')
     @patch('eventtracking.backends.async_routing.json.dumps', side_effect=ValueError)
-    @patch('eventtracking.backends.async_routing.async_send')
-    def test_with_value_error_in_event_json_encoding(self, mocked_async_send, _, mocked_log):
+    @patch('eventtracking.backends.async_routing.send_event')
+    def test_with_value_error_in_event_json_encoding(self, mocked_send_event, _, mocked_log):
 
         backend = AsyncRoutingBackend()
         backend.send(self.sample_event)
@@ -48,13 +48,13 @@ class TestAsyncRoutingBackend(TestCase):
         mocked_log.exception.assert_called_once_with(
             'JSONEncodeError: Unable to encode event: {}'.format(self.sample_event)
         )
-        mocked_async_send.assert_not_called()
+        mocked_send_event.assert_not_called()
 
-    @patch('eventtracking.backends.async_routing.async_send')
-    def test_successful_sending_event_to_task(self, mocked_async_send):
+    @patch('eventtracking.backends.async_routing.send_event')
+    def test_successful_sending_event_to_task(self, mocked_send_event):
         backend = AsyncRoutingBackend()
         backend.send(self.sample_event)
-        mocked_async_send.delay.assert_called_once_with(
+        mocked_send_event.delay.assert_called_once_with(
             ASYNC_ROUTING_BACKENDS_SETTINGS_NAME,
             json.dumps(self.sample_event)
         )
