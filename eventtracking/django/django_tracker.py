@@ -11,8 +11,6 @@ from eventtracking.tracker import Tracker
 from eventtracking.locator import ThreadLocalContextLocator
 
 
-default_app_config = 'eventtracking.django.apps.EventTrackingConfig'
-
 DJANGO_BACKEND_SETTING_NAME = 'EVENT_TRACKING_BACKENDS'
 DJANGO_PROCESSOR_SETTING_NAME = 'EVENT_TRACKING_PROCESSORS'
 DJANGO_ENABLED_SETTING_NAME = 'EVENT_TRACKING_ENABLED'
