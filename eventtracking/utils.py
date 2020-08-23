@@ -1,3 +1,0 @@
-"""
-Utilities for eventtracking app.
-"""
